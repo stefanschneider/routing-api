@@ -15,6 +15,7 @@ var _ = Describe("Config", func() {
 				cfg, err := config.NewConfigFromFile(cfg_file)
 
 				Expect(err).NotTo(HaveOccurred())
+				Expect(cfg.LogFile).To(Equal("/tmp/awesome.log"))
 				Expect(cfg.LogGuid).To(Equal("my_logs"))
 				Expect(cfg.MetronConfig.Address).To(Equal("1.2.3.4"))
 				Expect(cfg.MetronConfig.Port).To(Equal("4567"))

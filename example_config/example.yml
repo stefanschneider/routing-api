@@ -13,3 +13,4 @@ uaa_verification_key: "-----BEGIN PUBLIC KEY-----
 metron_config:
   address: "1.2.3.4"
   port: "4567"
+log_file: "/tmp/awesome.log"

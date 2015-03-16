@@ -16,6 +16,7 @@ type Config struct {
 	UAAPublicKey string       `yaml:"uaa_verification_key"`
 	LogGuid      string       `yaml:"log_guid"`
 	MetronConfig MetronConfig `yaml:"metron_config"`
+	LogFile      string       `yaml:"log_file"`
 }
 
 func NewConfigFromFile(configFile string) (Config, error) {

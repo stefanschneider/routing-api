@@ -18,10 +18,6 @@
 			"Rev": "150e4e8f749b21a7f0de8e3cfd885143fcea6b32"
 		},
 		{
-			"ImportPath": "github.com/cloudfoundry-incubator/cf-lager",
-			"Rev": "ddeb0ea40763e3e81aa65919b9d9fc6d0ecc75d6"
-		},
-		{
 			"ImportPath": "github.com/cloudfoundry/dropsonde",
 			"Rev": "d8399b690bf4b541b1a530ca1ca7305b4f3444c2"
 		},
@@ -56,7 +52,7 @@
 		},
 		{
 			"ImportPath": "github.com/pivotal-golang/lager",
-			"Rev": "a106931abed5afe3043eae8851be8b33a4bdfa3f"
+			"Rev": "d0663447db75fcf983c95bda8b1a908305df6e1e"
 		},
 		{
 			"ImportPath": "github.com/tedsuo/rata",

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"errors"
 	"flag"
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -14,7 +14,6 @@ import (
 	"github.com/cloudfoundry/dropsonde"
 	"github.com/pivotal-golang/lager"
 
-	cf_lager "github.com/cloudfoundry-incubator/cf-lager"
 	"github.com/tedsuo/rata"
 )
 
@@ -33,23 +32,31 @@ func route(f func(w http.ResponseWriter, r *http.Request)) http.Handler {
 }
 
 func main() {
-	logger := cf_lager.New("routing-api")
 
 	flag.Parse()
 	if *cfg_flag == "" {
-		logger.Error("starting", errors.New("No configuration file provided"))
+		fmt.Fprintf(os.Stderr, "starting: No configuration file provided")
 		os.Exit(1)
 	}
+
 	cfg, err := config.NewConfigFromFile(*cfg_flag)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "starting: %v", err)
+		os.Exit(1)
+	}
+
+	logger, err := getLogger(cfg)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Log file creation error: %v", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("omg wtf %v", logger)
+	logger.Info("ballllaaaaaaa!")
 
 	err = dropsonde.Initialize(cfg.MetronConfig.Address+":"+cfg.MetronConfig.Port, cfg.LogGuid)
 	if err != nil {
 		logger.Error("Dropsonde failed to initialize:", err)
-		os.Exit(1)
-	}
-
-	if err != nil {
-		logger.Error("starting", err)
 		os.Exit(1)
 	}
 
@@ -85,4 +92,23 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func getLogger(config config.Config) (lager.Logger, error) {
+	logger := lager.NewLogger("routing-api")
+
+	if config.LogFile == "" {
+		sink := lager.NewReconfigurableSink(lager.NewWriterSink(os.Stdout, lager.DEBUG), lager.DEBUG)
+		logger.RegisterSink(sink)
+	} else {
+		file, err := os.OpenFile(config.LogFile, os.O_APPEND|os.O_CREATE, 0666)
+		if err != nil {
+			return nil, err
+		}
+
+		sink := lager.NewReconfigurableSink(lager.NewWriterSink(file, lager.DEBUG), lager.DEBUG)
+		logger.RegisterSink(sink)
+	}
+
+	return logger, nil
 }
