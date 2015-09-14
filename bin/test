@@ -4,4 +4,6 @@ set -e -u -x
 
 go vet ./...
 
+df -k
+
 ginkgo -r -failOnPending -randomizeAllSpecs -race "$@"
