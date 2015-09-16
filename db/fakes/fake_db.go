@@ -12,7 +12,7 @@ type FakeDB struct {
 	ReadRoutesStub        func() ([]db.Route, error)
 	readRoutesMutex       sync.RWMutex
 	readRoutesArgsForCall []struct{}
-	readRoutesReturns     struct {
+	readRoutesReturns struct {
 		result1 []db.Route
 		result2 error
 	}
@@ -32,22 +32,37 @@ type FakeDB struct {
 	deleteRouteReturns struct {
 		result1 error
 	}
+	ReadTcpMappingsStub        func() ([]db.TcpMapping, error)
+	readTcpMappingsMutex       sync.RWMutex
+	readTcpMappingsArgsForCall []struct{}
+	readTcpMappingsReturns struct {
+		result1 []db.TcpMapping
+		result2 error
+	}
+	SaveTcpMappingStub        func(tcpMapping db.TcpMapping) error
+	saveTcpMappingMutex       sync.RWMutex
+	saveTcpMappingArgsForCall []struct {
+		tcpMapping db.TcpMapping
+	}
+	saveTcpMappingReturns struct {
+		result1 error
+	}
 	ConnectStub        func() error
 	connectMutex       sync.RWMutex
 	connectArgsForCall []struct{}
-	connectReturns     struct {
+	connectReturns struct {
 		result1 error
 	}
 	DisconnectStub        func() error
 	disconnectMutex       sync.RWMutex
 	disconnectArgsForCall []struct{}
-	disconnectReturns     struct {
+	disconnectReturns struct {
 		result1 error
 	}
 	WatchRouteChangesStub        func() (<-chan storeadapter.WatchEvent, chan<- bool, <-chan error)
 	watchRouteChangesMutex       sync.RWMutex
 	watchRouteChangesArgsForCall []struct{}
-	watchRouteChangesReturns     struct {
+	watchRouteChangesReturns struct {
 		result1 <-chan storeadapter.WatchEvent
 		result2 chan<- bool
 		result3 <-chan error
@@ -84,7 +99,7 @@ func (fake *FakeDB) SaveRoute(route db.Route) error {
 	fake.saveRouteArgsForCall = append(fake.saveRouteArgsForCall, struct {
 		route db.Route
 	}{route})
-	defer fake.saveRouteMutex.Unlock()
+	fake.saveRouteMutex.Unlock()
 	if fake.SaveRouteStub != nil {
 		return fake.SaveRouteStub(route)
 	} else {
@@ -139,6 +154,63 @@ func (fake *FakeDB) DeleteRouteArgsForCall(i int) db.Route {
 func (fake *FakeDB) DeleteRouteReturns(result1 error) {
 	fake.DeleteRouteStub = nil
 	fake.deleteRouteReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDB) ReadTcpMappings() ([]db.TcpMapping, error) {
+	fake.readTcpMappingsMutex.Lock()
+	fake.readTcpMappingsArgsForCall = append(fake.readTcpMappingsArgsForCall, struct{}{})
+	fake.readTcpMappingsMutex.Unlock()
+	if fake.ReadTcpMappingsStub != nil {
+		return fake.ReadTcpMappingsStub()
+	} else {
+		return fake.readTcpMappingsReturns.result1, fake.readTcpMappingsReturns.result2
+	}
+}
+
+func (fake *FakeDB) ReadTcpMappingsCallCount() int {
+	fake.readTcpMappingsMutex.RLock()
+	defer fake.readTcpMappingsMutex.RUnlock()
+	return len(fake.readTcpMappingsArgsForCall)
+}
+
+func (fake *FakeDB) ReadTcpMappingsReturns(result1 []db.TcpMapping, result2 error) {
+	fake.ReadTcpMappingsStub = nil
+	fake.readTcpMappingsReturns = struct {
+		result1 []db.TcpMapping
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDB) SaveTcpMapping(tcpMapping db.TcpMapping) error {
+	fake.saveTcpMappingMutex.Lock()
+	fake.saveTcpMappingArgsForCall = append(fake.saveTcpMappingArgsForCall, struct {
+		tcpMapping db.TcpMapping
+	}{tcpMapping})
+	fake.saveTcpMappingMutex.Unlock()
+	if fake.SaveTcpMappingStub != nil {
+		return fake.SaveTcpMappingStub(tcpMapping)
+	} else {
+		return fake.saveTcpMappingReturns.result1
+	}
+}
+
+func (fake *FakeDB) SaveTcpMappingCallCount() int {
+	fake.saveTcpMappingMutex.RLock()
+	defer fake.saveTcpMappingMutex.RUnlock()
+	return len(fake.saveTcpMappingArgsForCall)
+}
+
+func (fake *FakeDB) SaveTcpMappingArgsForCall(i int) db.TcpMapping {
+	fake.saveTcpMappingMutex.RLock()
+	defer fake.saveTcpMappingMutex.RUnlock()
+	return fake.saveTcpMappingArgsForCall[i].tcpMapping
+}
+
+func (fake *FakeDB) SaveTcpMappingReturns(result1 error) {
+	fake.SaveTcpMappingStub = nil
+	fake.saveTcpMappingReturns = struct {
 		result1 error
 	}{result1}
 }

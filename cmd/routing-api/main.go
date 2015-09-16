@@ -165,6 +165,7 @@ func constructApiServer(cfg config.Config, database db.DB, statsdClient statsd.S
 	routesHandler := handlers.NewRoutesHandler(token, *maxTTL, validator, database, logger)
 	eventStreamHandler := handlers.NewEventStreamHandler(token, database, logger, statsdClient, stopChan)
 	routeGroupsHandler := handlers.NewRouteGroupsHandler(token, logger)
+	tcpMappingsHandler := handlers.NewTcpMappingsHandler(token, database, logger)
 
 	actions := rata.Handlers{
 		routing_api.UpsertRoute:      route(routesHandler.Upsert),
@@ -172,6 +173,7 @@ func constructApiServer(cfg config.Config, database db.DB, statsdClient statsd.S
 		routing_api.ListRoute:        route(routesHandler.List),
 		routing_api.EventStreamRoute: route(eventStreamHandler.EventStream),
 		routing_api.ListRouterGroups: route(routeGroupsHandler.ListRouterGroups),
+		routing_api.UpsertTcpMapping: route(tcpMappingsHandler.Upsert),
 	}
 
 	handler, err := rata.NewRouter(routing_api.Routes, actions)

@@ -4,7 +4,7 @@ package fakes
 import (
 	"sync"
 
-	"github.com/cloudfoundry-incubator/routing-api"
+	routing_api "github.com/cloudfoundry-incubator/routing-api"
 	"github.com/cloudfoundry-incubator/routing-api/db"
 	"github.com/cloudfoundry-incubator/routing-api/handlers"
 )
