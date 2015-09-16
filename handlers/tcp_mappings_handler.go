@@ -36,11 +36,11 @@ func (h *TcpMappingsHandler) Upsert(w http.ResponseWriter, req *http.Request) {
 
 	log.Info("request", lager.Data{"tcp_mapping_creation": tcpMappings})
 
-	// err = h.token.DecodeToken(req.Header.Get("Authorization"), AdvertiseRouteScope, AdminRouteScope)
-	// if err != nil {
-	// 	handleUnauthorizedError(w, err, log)
-	// 	return
-	// }
+	err = h.token.DecodeToken(req.Header.Get("Authorization"), AdvertiseRouteScope, AdminRouteScope)
+	if err != nil {
+		handleUnauthorizedError(w, err, log)
+		return
+	}
 
 	err = h.validateTcpMappings(tcpMappings)
 	if err != nil {
