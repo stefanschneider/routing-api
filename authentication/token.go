@@ -3,6 +3,7 @@ package authentication
 import (
 	"encoding/pem"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -25,12 +26,14 @@ func (_ NullToken) CheckPublicToken() error {
 }
 
 type accessToken struct {
-	uaaPublicKey string
+	uaaPublicKey             string
+	symmetricVerificationKey string
 }
 
-func NewAccessToken(uaaPublicKey string) accessToken {
+func NewAccessToken(uaaPublicKey string, symmetricVerificationKey string) accessToken {
 	return accessToken{
-		uaaPublicKey: uaaPublicKey,
+		uaaPublicKey:             uaaPublicKey,
+		symmetricVerificationKey: symmetricVerificationKey,
 	}
 }
 
@@ -41,7 +44,15 @@ func (accessToken accessToken) DecodeToken(userToken string, desiredPermissions 
 	}
 
 	token, err := jwt.Parse(userToken, func(t *jwt.Token) (interface{}, error) {
-		return []byte(accessToken.uaaPublicKey), nil
+		if _, ok := t.Method.(*jwt.SigningMethodRSA); ok {
+			return []byte(accessToken.uaaPublicKey), nil
+		}
+
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); ok {
+			return []byte(accessToken.symmetricVerificationKey), nil
+		}
+
+		return nil, fmt.Errorf("Unsupported signing method: %v", t.Header["alg"])
 	})
 
 	if err != nil {
